@@ -1,7 +1,6 @@
 import Processor from './Machine/Processor.js';
 import Memory from './Machine/Memory.js';
 import Frequency from './Machine/Frequency.js';
-
 import MemoryView from './Views/MemoryView.js';
 
 const memory = new Memory(256)
@@ -19,7 +18,6 @@ memory.data[0x80] = 0x0A
 processor.pc.onChange  = (value) => memoryView.onRegisterChange('pc' , value)
 processor.mar.onChange = (value) => memoryView.onRegisterChange('mar', value)
 
-const frequency = Frequency.HZ(2)
 const interval = setInterval(() => {
     if (processor.halt) {
         clearInterval(interval)
@@ -28,4 +26,4 @@ const interval = setInterval(() => {
     processor.cycle()
     memoryView.update()
 
-}, frequency.inMilliseconds())
+}, Frequency.HZ(1).inMilliseconds())
