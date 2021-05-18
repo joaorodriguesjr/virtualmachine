@@ -1,5 +1,6 @@
 import Memory from './Memory.js'
 import Register from './Register.js'
+import Instruction from './Instruction.js'
 
 const instructions = [
     { mnemonic: 'NOP', addressing: 'IMP', length: 1, cycles: 1 },
@@ -37,7 +38,7 @@ export default class Processor {
 
         this.fetch().decode()
 
-        if (this.instruction.addressing === 'IMP') {
+        if (this.instruction.isImplied()) {
             this.execute()
         }
     }
@@ -49,16 +50,16 @@ export default class Processor {
     }
 
     decode() {
-        this.instruction = instructions[this.mdr.read()]
+        this.instruction = Instruction.create(instructions[this.mdr.read()])
         return this
     }
 
     execute() {
-        if (this.cycles < this.instruction.cycles) {
-            return this[this.instruction.addressing].call(this)
+        if (! this.instruction.isReady(this.cycles)) {
+            return this.instruction.callAddressing(this)
         }
 
-        this[this.instruction.mnemonic].call(this)
+        this.instruction.callExecution(this)
         this.complete()
     }
 
@@ -71,22 +72,16 @@ export default class Processor {
         this.cycles = 0
     }
 
-    IMP() {
-        return
-    }
+    IMP() { return }
 
     ABS() {
-        this.mar.write(this.pc.read() + this.instruction.length - (this.instruction.cycles - this.cycles))
+        this.mar.write(this.pc.read() + this.instruction.calculateOffset(this.cycles))
         this.mdr.write(this.memory.read(this.mar.read()))
     }
 
-    NOP() {
-        return
-    }
+    NOP() { return }
 
-    HLT() {
-        this.halt = true
-    }
+    HLT() { this.halt = true }
 
     LDA() {
         this.mar.write(this.mdr.read())
