@@ -30,6 +30,8 @@ export default class Register {
                 this.data.setUint16(0, value)
                 break
         }
+
+        this.onChange(this)
     }
 
     /**
@@ -44,6 +46,12 @@ export default class Register {
                 this.data.setUint16(0, this.data.getUint16(0) + value)
                 break
         }
+
+        this.onChange(this)
+    }
+
+    onChange() {
+        return
     }
 
     /**
