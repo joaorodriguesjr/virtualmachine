@@ -23,6 +23,7 @@ export default class MemoryView {
     }
 
     initialize() {
+        this.registerElements = new Map()
         this.dataElements = []
         const tbody = this.document.querySelector('.memory-view tbody')
 
@@ -60,21 +61,12 @@ export default class MemoryView {
         }
     }
 
-    onPcChange(index) {
-        if (this.pcElement) {
-            this.pcElement.classList.remove('pc-highlight')
+    onRegisterChange(name, index) {
+        if (this.registerElements.has(name)) {
+            this.registerElements.get(name).classList.remove(`${name}-highlight`)
         }
 
-        this.pcElement = this.dataElements[index]
-        this.pcElement.classList.add('pc-highlight')
-    }
-
-    onMarChange(index) {
-        if (this.marElement) {
-            this.marElement.classList.remove('mar-highlight')
-        }
-
-        this.marElement = this.dataElements[index]
-        this.marElement.classList.add('mar-highlight')
+        this.registerElements.set(name, this.dataElements[index])
+        this.registerElements.get(name).classList.add(`${name}-highlight`)
     }
 }

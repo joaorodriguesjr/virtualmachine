@@ -49,7 +49,7 @@ class EightBitsRegister extends Register {
      */
     write(value) {
         this.data.setUint8(0, value)
-        this.onChange(this)
+        this.onChange(this.read())
     }
 
     /**
@@ -57,7 +57,7 @@ class EightBitsRegister extends Register {
      */
     increment(value = 1) {
         this.data.setUint8(0, this.data.getUint8(0) + value)
-        this.onChange(this)
+        this.onChange(this.read())
     }
 
     /**
@@ -65,6 +65,6 @@ class EightBitsRegister extends Register {
      */
     decrement(value = 1) {
         this.data.setUint8(0, this.data.getUint8(0) - value)
-        this.onChange(this)
+        this.onChange(this.read())
     }
 }
