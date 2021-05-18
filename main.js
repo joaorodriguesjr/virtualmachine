@@ -6,7 +6,6 @@ import MemoryView from './Views/MemoryView.js';
 
 const memory = new Memory(256)
 const processor = new Processor(memory)
-processor.start(Frequency.HZ(1))
 
 memory.data[0x00] = 0x02
 memory.data[0x01] = 0x80
@@ -34,5 +33,7 @@ const interval = setInterval(() => {
         clearInterval(interval)
     }
 
+    processor.cycle()
     memoryView.update()
+
 }, frequency.inMilliseconds())

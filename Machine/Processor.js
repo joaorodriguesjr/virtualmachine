@@ -1,12 +1,11 @@
 import Memory from './Memory.js'
 import Register from './Register.js'
-import Frequency from './Frequency.js'
 
 const instructions = [
-    { mnemonic: 'NOP', length: 1 },
-    { mnemonic: 'HLT', length: 1 },
-    { mnemonic: 'LDA', length: 2 },
-    { mnemonic: 'STA', length: 2 },
+    { mnemonic: 'NOP', addressing: 'IMP', length: 1, cycles: 1 },
+    { mnemonic: 'HLT', addressing: 'IMP', length: 1, cycles: 1 },
+    { mnemonic: 'LDA', addressing: 'ABS', length: 2, cycles: 3 },
+    { mnemonic: 'STA', addressing: 'ABS', length: 2, cycles: 3 },
 ]
 
 export default class Processor {
@@ -23,30 +22,28 @@ export default class Processor {
         this.mdr = Register.eightBits()
 
         this.halt = false
+        this.cycles = 0
     }
 
     /**
-     * @param {Frequency} frequency
+     * @returns {void}
      */
-    start(frequency) {
-        const interval = setInterval(() => {
-            if (this.halt) {
-                clearInterval(interval)
-            }
-
-            this.cycle()
-        }, frequency.inMilliseconds())
-    }
-
     cycle() {
-        this.mar.write(this.pc.read())
-        this.fetch().decode().execute()
+        this.cycles++
 
-        this.pc.increment(this.instruction.length)
-        return this
+        if (this.instruction) {
+            return this.execute()
+        }
+
+        this.fetch().decode()
+
+        if (this.instruction.addressing === 'IMP') {
+            this.execute()
+        }
     }
 
     fetch() {
+        this.mar.write(this.pc.read())
         this.mdr.write(this.memory.read(this.mar.read()))
         return this
     }
@@ -57,8 +54,30 @@ export default class Processor {
     }
 
     execute() {
+        if (this.cycles < this.instruction.cycles) {
+            return this[this.instruction.addressing].call(this)
+        }
+
         this[this.instruction.mnemonic].call(this)
-        return this
+        this.complete()
+    }
+
+    complete() {
+        if (! this.halt) {
+            this.pc.increment(this.instruction.length)
+        }
+
+        delete this.instruction
+        this.cycles = 0
+    }
+
+    IMP() {
+        return
+    }
+
+    ABS() {
+        this.mar.write(this.pc.read() + this.instruction.length - (this.instruction.cycles - this.cycles))
+        this.mdr.write(this.memory.read(this.mar.read()))
     }
 
     NOP() {
@@ -70,8 +89,6 @@ export default class Processor {
     }
 
     LDA() {
-        this.mar.write(this.pc.read() + (this.instruction.length - 1))
-        this.mdr.write(this.memory.read(this.mar.read()))
         this.mar.write(this.mdr.read())
         this.mdr.write(this.memory.read(this.mar.read()))
 
@@ -79,10 +96,7 @@ export default class Processor {
     }
 
     STA() {
-        this.mar.write(this.pc.read() + (this.instruction.length - 1))
-        this.mdr.write(this.memory.read(this.mar.read()))
         this.mar.write(this.mdr.read())
-
         this.memory.write(this.mar.read(), this.ac.read())
     }
 }
