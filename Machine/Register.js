@@ -10,44 +10,14 @@ export default class Register {
      * @returns {Number}
      */
     read() {
-        switch (this.data.byteLength) {
-            case 1:
-                return this.data.getUint8(0)
-            case 2:
-                return this.data.getUint16(0)
-        }
+        throw new Error('Calling read method from abstract class Register is not allowed')
     }
 
     /**
      * @param {Number} value
      */
     write(value) {
-        switch (this.data.byteLength) {
-            case 1:
-                this.data.setUint8(0, value)
-                break
-            case 2:
-                this.data.setUint16(0, value)
-                break
-        }
-
-        this.onChange(this)
-    }
-
-    /**
-     * @param {Number} value
-     */
-    increment(value = 1) {
-        switch (this.data.byteLength) {
-            case 1:
-                this.data.setUint8(0, this.data.getUint8(0) + value)
-                break
-            case 2:
-                this.data.setUint16(0, this.data.getUint16(0) + value)
-                break
-        }
-
-        this.onChange(this)
+        throw new Error('Calling write method from abstract class Register is not allowed')
     }
 
     onChange() {
@@ -58,13 +28,43 @@ export default class Register {
      * @returns {Register}
      */
     static eightBits() {
-        return new Register(1)
+        return new EightBitsRegister()
+    }
+}
+
+class EightBitsRegister extends Register {
+    constructor() {
+        super(1)
     }
 
     /**
-     * @returns {Register}
+     * @returns {Number}
      */
-    static sixteenBits() {
-        return new Register(2)
+    read() {
+        return this.data.getUint8(0)
+    }
+
+    /**
+     * @param {Number} value
+     */
+    write(value) {
+        this.data.setUint8(0, value)
+        this.onChange(this)
+    }
+
+    /**
+     * @param {Number} value
+     */
+    increment(value = 1) {
+        this.data.setUint8(0, this.data.getUint8(0) + value)
+        this.onChange(this)
+    }
+
+    /**
+     * @param {Number} value
+     */
+    decrement(value = 1) {
+        this.data.setUint8(0, this.data.getUint8(0) - value)
+        this.onChange(this)
     }
 }
