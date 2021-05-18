@@ -1,0 +1,29 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #252525;
+    color: #ABABAB;
+}
+
+.pc-highlight {
+    background-color: #fff365;
+    color: #595200;
+}
+
+.mar-highlight {
+    background-color: #badc58;
+    color: #323f0d
+}
+
+.memory-view {
+    font-size: 18px;
+}
+
+.memory-page {
+    background-color: #a5a5a5;
+    color: #353535;
+}
+
+th, td {
+    padding-top: 2px;
+    border-radius: 4px;
+}

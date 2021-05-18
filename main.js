@@ -27,7 +27,7 @@ processor.mar.onChange = (register) => {
 
 memoryView.onPcChange(processor.pc.read())
 
-const frequency = Frequency.HZ(1)
+const frequency = Frequency.HZ(2)
 const interval = setInterval(() => {
     if (processor.halt) {
         clearInterval(interval)
