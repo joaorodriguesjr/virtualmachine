@@ -1,5 +1,8 @@
 import Memory from '../Machine/Memory.js'
 
+const ROWS_NUMBER = 16
+const COLS_NUMBER = 16
+
 /**
  * @param {Number} value
  * @returns {String}
@@ -27,7 +30,7 @@ export default class MemoryView {
         this.dataElements = []
         const tbody = this.document.querySelector('.memory-view tbody')
 
-        for (let row = 0; row < 16; row++) {
+        for (let row = 0; row < ROWS_NUMBER; row++) {
             tbody.appendChild(this.createTableRow(row))
         }
 
@@ -37,10 +40,10 @@ export default class MemoryView {
     createTableRow(row) {
         const tr = this.document.createElement('tr')
         const th = this.document.createElement('th')
-        th.textContent = hex(row * 16)
+        th.textContent = hex(row * ROWS_NUMBER)
         tr.appendChild(th)
 
-        for (let col = 0; col < 16; col++) {
+        for (let col = 0; col < COLS_NUMBER; col++) {
             tr.appendChild(this.createTableData(row, col))
         }
 
@@ -49,7 +52,7 @@ export default class MemoryView {
 
     createTableData(row, col) {
         let td = this.document.createElement('td')
-        td.textContent = hex(this.memory.read(row * 16 + col))
+        td.textContent = hex(this.memory.read(row * ROWS_NUMBER + col))
         this.dataElements.push(td)
 
         return td
