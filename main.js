@@ -17,6 +17,7 @@ memory.data[0x80] = 0x0A
 
 processor.pc.onChange  = (value) => memoryView.onRegisterChange('pc' , value)
 processor.mar.onChange = (value) => memoryView.onRegisterChange('mar', value)
+processor.pc.write(0x00)
 
 const interval = setInterval(() => {
     if (processor.halt) {
