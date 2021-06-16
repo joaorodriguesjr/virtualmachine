@@ -7,17 +7,15 @@ const memory = new Memory(256)
 const processor = new Processor(memory)
 const memoryView = new MemoryView(memory, document)
 
-memory.data[0x00] = 0x02
-memory.data[0x01] = 0x80
-memory.data[0x02] = 0x03
-memory.data[0x03] = 0x81
-memory.data[0x04] = 0x01
-
-memory.data[0x80] = 0x0A
+memory.write(0x00, 0x02)
+memory.write(0x01, 0x80)
+memory.write(0x02, 0x03)
+memory.write(0x03, 0x90)
+memory.write(0x04, 0x01)
+memory.write(0x80, 0x0A)
 
 processor.pc.onChange  = (value) => memoryView.onRegisterChange('pc' , value)
 processor.mar.onChange = (value) => memoryView.onRegisterChange('mar', value)
-processor.pc.write(0x00)
 
 const interval = setInterval(() => {
     if (processor.halt) {
@@ -27,4 +25,4 @@ const interval = setInterval(() => {
     processor.cycle()
     memoryView.update()
 
-}, Frequency.HZ(1).inMilliseconds())
+}, Frequency.HZ(5).inMilliseconds())
