@@ -7,6 +7,7 @@ const instructions = [
     { mnemonic: 'HLT', addressing: 'IMP', length: 1, cycles: 1 },
     { mnemonic: 'LDA', addressing: 'ABS', length: 2, cycles: 3 },
     { mnemonic: 'STA', addressing: 'ABS', length: 2, cycles: 3 },
+    { mnemonic: 'CMP', addressing: 'ABS', length: 2, cycles: 3 },
 ]
 
 export default class Processor {
@@ -18,6 +19,8 @@ export default class Processor {
 
         this.pc = Register.eightBits()
         this.ac = Register.eightBits()
+
+        this.status = Register.status()
 
         this.mar = Register.eightBits()
         this.mdr = Register.eightBits()
@@ -93,5 +96,19 @@ export default class Processor {
     STA() {
         this.mar.write(this.mdr.read())
         this.memory.write(this.mar.read(), this.ac.read())
+    }
+
+    CMP() {
+        if (this.ac.read() === this.mdr.read()) {
+            this.status.setZero()
+        } else {
+            this.status.clearZero()
+        }
+
+        if (this.ac.read() >= this.mdr.read()) {
+            this.status.setCarry()
+        } else {
+            this.status.clearCarry()
+        }
     }
 }
